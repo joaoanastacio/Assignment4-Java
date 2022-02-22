@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
@@ -15,6 +17,7 @@ public class Main {
   public static final int NO_GUESSES_AVAILABLE = 0;
   public static final int MAXIMUM_GUESSES_AVAILABLE = 10;
   public static final int FIRST_LETTER_FROM_WORD = 0;
+  public static final int HASHMAP_BASE_VALUE_TO_INCREASE = 1;
 
   public static void main(String[] args) {
 
@@ -53,15 +56,15 @@ public class Main {
 
         if(playerWon(targetCity, rightWordsGuessedByPlayer)) {
           System.out.println("You win!");
-          System.out.println("You have guessed " + targetCity + "correctly.");
+          System.out.println("You have guessed " + targetCity + " correctly.");
+          System.out.println("You have guessed " + "(" + (MAXIMUM_GUESSES_AVAILABLE - playerGuesses)
+              + ")" + " wrong letters: " + wrongWordsGuessedByPlayer);
+          break;
         }
-
       } else {
         playerGuesses = playerGuesses - 1;
         wrongWordsGuessedByPlayer.add(userGuess);
       }
-      System.out.println("You have guessed " + "(" + (MAXIMUM_GUESSES_AVAILABLE - playerGuesses)
-          + ")" + " wrong letters: " + wrongWordsGuessedByPlayer);
     }
   }
 
@@ -128,14 +131,39 @@ public class Main {
   }
 
   private static boolean playerWon(String targetCity, ArrayList<Character> userGuesses) {
+    HashMap<Character, Integer> countByWord = new HashMap<Character, Integer>();
     boolean playerWon = false;
 
-    // Check if player win
-    // To player win, rightWordsGuessedByPlayer must have all characters from target City
+    for (int index = 0; index < targetCity.length(); index++) {
+      Character letterInIndex = targetCity.charAt(index);
 
-    // Should I distinguish lower cases from upper case?
-    // TODO: add logic to validate if player won
+      if (!countByWord.containsKey(letterInIndex)) {
+        countByWord.put(letterInIndex, HASHMAP_BASE_VALUE_TO_INCREASE);
+      } else {
+        int currentValueInKey = countByWord.get(letterInIndex);
+        countByWord.put(letterInIndex, (currentValueInKey + HASHMAP_BASE_VALUE_TO_INCREASE));
+      }
+    }
+
+    for (Map.Entry<Character, Integer> wordMap : countByWord.entrySet()) {
+      if (countCharacterInArray(wordMap.getKey(), userGuesses) == wordMap.getValue()) {
+        playerWon = true;
+      } else {
+        playerWon = false;
+      }
+    }
     return playerWon;
+  }
+
+  private static int countCharacterInArray(char targetCharacter, ArrayList<Character> userGuesses) {
+    int characterQuantity = 0;
+
+    for (char character : userGuesses) {
+      if (character == targetCharacter) {
+        characterQuantity += 1;
+      }
+    }
+    return characterQuantity;
   }
 
 }
