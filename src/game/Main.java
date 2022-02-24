@@ -50,6 +50,14 @@ public class Main {
       System.out.print("Guess a letter: ");
       char userGuess = userInputReader.next().charAt(FIRST_LETTER_FROM_WORD);
 
+      if (!Character.isLetter(userGuess) || wrongWordsGuessedByPlayer.contains(userGuess)) {
+        System.out.println("You have guessed " + "(" + (MAXIMUM_GUESSES_AVAILABLE - playerGuesses)
+            + ")" + " wrong letters: " + wrongWordsGuessedByPlayer);
+        playerGuesses = playerGuesses - 1;
+        wrongWordsGuessedByPlayer.add(userGuess);
+        continue;
+      }
+
       if(isValidGuess(userGuess, targetCity)) {
         rightWordsGuessedByPlayer.add(userGuess);
         displayGuessesPosition(targetCity, rightWordsGuessedByPlayer);
@@ -57,14 +65,14 @@ public class Main {
         if(playerWon(targetCity, rightWordsGuessedByPlayer)) {
           System.out.println("You win!");
           System.out.println("You have guessed " + targetCity + " correctly.");
-          System.out.println("You have guessed " + "(" + (MAXIMUM_GUESSES_AVAILABLE - playerGuesses)
-              + ")" + " wrong letters: " + wrongWordsGuessedByPlayer);
           break;
         }
       } else {
         playerGuesses = playerGuesses - 1;
         wrongWordsGuessedByPlayer.add(userGuess);
       }
+      System.out.println("You have guessed " + "(" + (MAXIMUM_GUESSES_AVAILABLE - playerGuesses)
+          + ")" + " wrong letters: " + wrongWordsGuessedByPlayer);
     }
   }
 
@@ -131,7 +139,7 @@ public class Main {
   }
 
   private static boolean playerWon(String targetCity, ArrayList<Character> userGuesses) {
-    HashMap<Character, Integer> countByWord = new HashMap<Character, Integer>();
+    HashMap<Character, Integer> countByWord = new HashMap<>();
     boolean playerWon = false;
 
     for (int index = 0; index < targetCity.length(); index++) {
