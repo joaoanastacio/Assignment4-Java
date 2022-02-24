@@ -30,8 +30,9 @@ public class Main {
     int targetLineInFile = (int) (Math.random() * baseSearchRange) + INITIAL_LINE_IN_FILE;
 
     String targetCity = getCityAtLineInFile(targetLineInFile, baseFile);
+//    String targetCity = "Sao Paulo";
     System.out.println("Target City: " + targetCity); // TODO: remove comment
-    displayIntroduction(targetCity.length());
+    displayIntroduction(targetCity);
 
     int playerGuesses = MAXIMUM_GUESSES_AVAILABLE;
     ArrayList<Character> wrongWordsGuessedByPlayer = new ArrayList<>();
@@ -51,10 +52,10 @@ public class Main {
       char userGuess = userInputReader.next().charAt(FIRST_LETTER_FROM_WORD);
 
       if (!Character.isLetter(userGuess) || wrongWordsGuessedByPlayer.contains(userGuess)) {
-        System.out.println("You have guessed " + "(" + (MAXIMUM_GUESSES_AVAILABLE - playerGuesses)
-            + ")" + " wrong letters: " + wrongWordsGuessedByPlayer);
         playerGuesses = playerGuesses - 1;
         wrongWordsGuessedByPlayer.add(userGuess);
+        System.out.println("You have guessed " + "(" + (MAXIMUM_GUESSES_AVAILABLE - playerGuesses)
+            + ")" + " wrong letters: " + wrongWordsGuessedByPlayer);
         continue;
       }
 
@@ -111,11 +112,15 @@ public class Main {
     return cityAtLine;
   }
 
-  private static void displayIntroduction(int cityLength) {
+  private static void displayIntroduction(String targetCity) {
     System.out.println("Here's the question.");
 
-    for(int i = 1; i <= cityLength; i++) {
-      System.out.print("_");
+    for(int i = 0; i < targetCity.length(); i++) {
+      if(!Character.isWhitespace(targetCity.charAt(i))) {
+        System.out.print("_");
+      } else {
+        System.out.print(" ");
+      }
     }
     System.out.println();
   }
@@ -123,7 +128,7 @@ public class Main {
   private static boolean isValidGuess(char userGuess, String targetCity) {
     int notFoundTargetNumber = -1;
 
-    if (targetCity.indexOf(userGuess) != notFoundTargetNumber) {
+    if (targetCity.toLowerCase().indexOf(userGuess) != notFoundTargetNumber) {
       return true;
     }
     return false;
@@ -134,9 +139,14 @@ public class Main {
     System.out.print("You are guessing: ");
 
     for(char character : targetCityInCharacters) {
-      if(userGuesses.contains(character)) {
+      if(userGuesses.contains(Character.toLowerCase(character)) ||
+          userGuesses.contains(Character.toUpperCase(character))) {
         System.out.print(character);
       } else {
+        if (Character.isWhitespace(character)) {
+          System.out.print(" ");
+          continue;
+        }
         System.out.print("_");
       }
     }
