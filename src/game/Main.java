@@ -59,8 +59,13 @@ public class Main {
       }
 
       if(isValidGuess(userGuess, targetCity)) {
-        rightWordsGuessedByPlayer.add(userGuess);
-        displayGuessesPosition(targetCity, rightWordsGuessedByPlayer);
+        if(!rightWordsGuessedByPlayer.contains(userGuess)) {
+          rightWordsGuessedByPlayer.add(userGuess);
+          displayGuessesPosition(targetCity, rightWordsGuessedByPlayer);
+        } else {
+          System.out.println("Letter already played. try again with another one.");
+          continue;
+        }
 
         if(playerWon(targetCity, rightWordsGuessedByPlayer)) {
           System.out.println("You win!");
