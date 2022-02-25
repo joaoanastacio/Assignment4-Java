@@ -12,7 +12,6 @@ import java.util.Scanner;
 
 public class Main {
 
-  public static final int SHOULD_STILL_GAMING = 1;
   public static final int INITIAL_LINE_IN_FILE = 0;
   public static final int NO_GUESSES_AVAILABLE = 0;
   public static final int MAXIMUM_GUESSES_AVAILABLE = 10;
@@ -21,23 +20,22 @@ public class Main {
 
   public static void main(String[] args) {
 
-    int stillGaming = SHOULD_STILL_GAMING;
-
-    File baseFile = new File("cities.txt");
-    int fileNumberOfLines = getFileNumberOfLines(baseFile);
+    FileManager fileManager = new FileManager("cities.txt");
+    int fileNumberOfLines = fileManager.getFileNumberOfLines();
 
     int baseSearchRange = fileNumberOfLines - INITIAL_LINE_IN_FILE + 1;
     int targetLineInFile = (int) (Math.random() * baseSearchRange) + INITIAL_LINE_IN_FILE;
 
-    String targetCity = getCityAtLineInFile(targetLineInFile, baseFile);
+    String targetCity = fileManager.getCityAtLineInFile(targetLineInFile);
     displayIntroduction(targetCity);
+
     int playerGuesses = MAXIMUM_GUESSES_AVAILABLE;
     ArrayList<Character> wrongWordsGuessedByPlayer = new ArrayList<>();
     ArrayList<Character> rightWordsGuessedByPlayer = new ArrayList<>();
 
     Scanner userInputReader = new Scanner(System.in);
 
-    while (stillGaming == SHOULD_STILL_GAMING) {
+    while (true) {
 
       if (playerGuesses == NO_GUESSES_AVAILABLE) {
         System.out.println("You lose!");
@@ -79,36 +77,6 @@ public class Main {
       System.out.println("You have guessed " + "(" + (MAXIMUM_GUESSES_AVAILABLE - playerGuesses)
           + ")" + " wrong letters: " + wrongWordsGuessedByPlayer);
     }
-  }
-
-  private static int getFileNumberOfLines(File baseFile) {
-    int numberOfLines = 0;
-
-    try {
-      Scanner fileReader = new Scanner(baseFile);
-
-      while (fileReader.hasNextLine()) {
-        String line = fileReader.nextLine();
-        numberOfLines++;
-      }
-      fileReader.close();
-
-    } catch (FileNotFoundException exception) {
-      System.out.println("Error: File not found!");
-    }
-    return numberOfLines;
-  }
-
-  private static String getCityAtLineInFile(int fileLine, File baseFile) {
-    String cityAtLine = null;
-
-    try {
-      cityAtLine = Files.readAllLines(Paths.get(baseFile.getName())).get(fileLine);
-
-    } catch (IOException exception) {
-      System.out.println("Error: Fail to read file, try again.");
-    }
-    return cityAtLine;
   }
 
   private static void displayIntroduction(String targetCity) {
