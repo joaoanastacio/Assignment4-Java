@@ -30,10 +30,8 @@ public class Main {
     int targetLineInFile = (int) (Math.random() * baseSearchRange) + INITIAL_LINE_IN_FILE;
 
     String targetCity = getCityAtLineInFile(targetLineInFile, baseFile);
-//    String targetCity = "Sao Paulo";
     System.out.println("Target City: " + targetCity); // TODO: remove comment
     displayIntroduction(targetCity);
-
     int playerGuesses = MAXIMUM_GUESSES_AVAILABLE;
     ArrayList<Character> wrongWordsGuessedByPlayer = new ArrayList<>();
     ArrayList<Character> rightWordsGuessedByPlayer = new ArrayList<>();
@@ -54,6 +52,7 @@ public class Main {
       if (!Character.isLetter(userGuess) || wrongWordsGuessedByPlayer.contains(userGuess)) {
         playerGuesses = playerGuesses - 1;
         wrongWordsGuessedByPlayer.add(userGuess);
+        displayGuessesPosition(targetCity, rightWordsGuessedByPlayer);
         System.out.println("You have guessed " + "(" + (MAXIMUM_GUESSES_AVAILABLE - playerGuesses)
             + ")" + " wrong letters: " + wrongWordsGuessedByPlayer);
         continue;
@@ -76,6 +75,7 @@ public class Main {
       } else {
         playerGuesses = playerGuesses - 1;
         wrongWordsGuessedByPlayer.add(userGuess);
+        displayGuessesPosition(targetCity, rightWordsGuessedByPlayer);
       }
       System.out.println("You have guessed " + "(" + (MAXIMUM_GUESSES_AVAILABLE - playerGuesses)
           + ")" + " wrong letters: " + wrongWordsGuessedByPlayer);
@@ -155,7 +155,7 @@ public class Main {
 
   private static boolean playerWon(String targetCity, ArrayList<Character> userGuesses) {
     HashMap<Character, Integer> countByWord = new HashMap<>();
-    boolean playerWon = false;
+    int countOfCorrectLetter = 0;
 
     for (int index = 0; index < targetCity.length(); index++) {
       Character letterInIndex = targetCity.charAt(index);
@@ -169,20 +169,20 @@ public class Main {
     }
 
     for (Map.Entry<Character, Integer> wordMap : countByWord.entrySet()) {
-      if (countCharacterInArray(wordMap.getKey(), userGuesses) == wordMap.getValue()) {
-        playerWon = true;
-      } else {
-        playerWon = false;
+      if(userGuesses.contains(Character.toLowerCase(wordMap.getKey())) ||
+          userGuesses.contains(Character.toUpperCase(wordMap.getKey()))) {
+        countOfCorrectLetter += 1;
       }
     }
-    return playerWon;
+    return countOfCorrectLetter == countByWord.size();
   }
 
   private static int countCharacterInArray(char targetCharacter, ArrayList<Character> userGuesses) {
     int characterQuantity = 0;
 
     for (char character : userGuesses) {
-      if (character == targetCharacter) {
+      if (Character.toLowerCase(character) == Character.toLowerCase(targetCharacter) ||
+          Character.toUpperCase(character) == Character.toUpperCase(targetCharacter)) {
         characterQuantity += 1;
       }
     }
