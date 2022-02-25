@@ -26,7 +26,7 @@ public class Driver {
 
     while (true) {
       if (player.getAvailablePlayerGuesses() == NO_GUESSES_AVAILABLE) {
-        System.out.println("You lose!");
+        System.out.println("\nYou lose!");
         System.out.println("The correct word was: " + targetCity);
         break;
       }
@@ -37,8 +37,8 @@ public class Driver {
       if (!Character.isLetter(userGuess) || player.playedWrongGuessBefore(userGuess)) {
         player.decreasePlayerGuesses();
         player.addToPlayerWrongGuesses(userGuess);
-        displayGuessesPosition(targetCity, player.getRightWordsGuessedByPlayer());
-        displayWrongGuesses(player.getAvailablePlayerGuesses(), player.getWrongWordsGuessedByPlayer());
+        displayGuessesPosition(targetCity, player.getRightGuesses());
+        displayWrongGuesses(player.getAvailablePlayerGuesses(), player.getWrongGuesses());
         continue;
       }
 
@@ -50,8 +50,8 @@ public class Driver {
           continue;
         }
 
-        if(player.playerWon(targetCity, player.getRightWordsGuessedByPlayer())) {
-          System.out.println("You win!\nYou have guessed " + targetCity + " correctly.");
+        if(player.playerWon(targetCity, player.getRightGuesses())) {
+          System.out.println("\nYou win!\nYou have guessed " + targetCity + " correctly.");
           break;
         }
       } else {
@@ -59,8 +59,8 @@ public class Driver {
         player.addToPlayerWrongGuesses(userGuess);
       }
 
-      displayGuessesPosition(targetCity, player.getRightWordsGuessedByPlayer());
-      displayWrongGuesses(player.getAvailablePlayerGuesses(), player.getWrongWordsGuessedByPlayer());
+      displayGuessesPosition(targetCity, player.getRightGuesses());
+      displayWrongGuesses(player.getAvailablePlayerGuesses(), player.getWrongGuesses());
     }
   }
 

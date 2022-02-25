@@ -25,11 +25,11 @@ public class Player {
     this.rightWordsGuessedByPlayer.add(userGuess);
   }
 
-  public ArrayList<Character> getWrongWordsGuessedByPlayer() {
+  public ArrayList<Character> getWrongGuesses() {
     return wrongWordsGuessedByPlayer;
   }
 
-  public ArrayList<Character> getRightWordsGuessedByPlayer() {
+  public ArrayList<Character> getRightGuesses() {
     return this.rightWordsGuessedByPlayer;
   }
 
@@ -50,11 +50,12 @@ public class Player {
   }
 
   public boolean playerWon(String targetCity, ArrayList<Character> userGuesses) {
+    String targetCityFormatted = targetCity.replaceAll("\\s","");
     HashMap<Character, Integer> countByWord = new HashMap<>();
     int countOfCorrectLetter = 0;
 
-    for (int index = 0; index < targetCity.length(); index++) {
-      Character letterInIndex = targetCity.charAt(index);
+    for (int index = 0; index < targetCityFormatted.length(); index++) {
+      Character letterInIndex = targetCityFormatted.charAt(index);
 
       if (!countByWord.containsKey(letterInIndex)) {
         countByWord.put(letterInIndex, HASHMAP_BASE_VALUE_TO_INCREASE);
