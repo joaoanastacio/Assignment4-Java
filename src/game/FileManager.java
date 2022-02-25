@@ -12,16 +12,11 @@ public class FileManager {
   private File file;
 
   public FileManager(String fileName) {
-    this.file = initializeFile(fileName);
-  }
-
-  private File initializeFile(String fileName) {
-    return new File(fileName);
+    this.file = new File(fileName);
   }
 
   public int getFileNumberOfLines() {
     int numberOfLines = 0;
-
     try {
       Scanner fileReader = new Scanner(this.file);
 
@@ -32,7 +27,9 @@ public class FileManager {
       fileReader.close();
 
     } catch (FileNotFoundException exception) {
-      System.out.println("Error: File not found!");
+
+      System.out.println("Error: File not found! \n"
+          + "Restart the game and make sure to pass the correct path of file.");
     }
     return numberOfLines;
   }
