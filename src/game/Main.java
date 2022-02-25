@@ -1,10 +1,5 @@
 package game;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,15 +24,13 @@ public class Main {
     String targetCity = fileManager.getCityAtLineInFile(targetLineInFile);
     displayIntroduction(targetCity);
 
-    int playerGuesses = MAXIMUM_GUESSES_AVAILABLE;
-    ArrayList<Character> wrongWordsGuessedByPlayer = new ArrayList<>();
-    ArrayList<Character> rightWordsGuessedByPlayer = new ArrayList<>();
+    Player player = new Player();
 
     Scanner userInputReader = new Scanner(System.in);
 
     while (true) {
 
-      if (playerGuesses == NO_GUESSES_AVAILABLE) {
+      if (player.getAvailablePlayerGuesses() == NO_GUESSES_AVAILABLE) {
         System.out.println("You lose!");
         System.out.println("The correct word was: " + targetCity);
         break;
@@ -46,36 +39,39 @@ public class Main {
       System.out.print("Guess a letter: ");
       char userGuess = userInputReader.next().charAt(FIRST_LETTER_FROM_WORD);
 
-      if (!Character.isLetter(userGuess) || wrongWordsGuessedByPlayer.contains(userGuess)) {
-        playerGuesses = playerGuesses - 1;
-        wrongWordsGuessedByPlayer.add(userGuess);
-        displayGuessesPosition(targetCity, rightWordsGuessedByPlayer);
-        System.out.println("You have guessed " + "(" + (MAXIMUM_GUESSES_AVAILABLE - playerGuesses)
-            + ")" + " wrong letters: " + wrongWordsGuessedByPlayer);
+      if (!Character.isLetter(userGuess) || player.playedWrongGuessBefore(userGuess)) {
+        player.decreasePlayerGuesses();
+        player.addToPlayerWrongGuesses(userGuess);
+        displayGuessesPosition(targetCity, player.getRightWordsGuessedByPlayer());
+
+        System.out.println("You have guessed " + "(" +
+            (MAXIMUM_GUESSES_AVAILABLE - player.getAvailablePlayerGuesses())+
+            ")" + " wrong letters: " + player.getWrongWordsGuessedByPlayer());
         continue;
       }
 
       if(isValidGuess(userGuess, targetCity)) {
-        if(!rightWordsGuessedByPlayer.contains(userGuess)) {
-          rightWordsGuessedByPlayer.add(userGuess);
-          displayGuessesPosition(targetCity, rightWordsGuessedByPlayer);
+        if(!player.playedRightGuessBefore(userGuess)) {
+          player.addToPlayerRightGuesses(userGuess);
+          displayGuessesPosition(targetCity, player.getRightWordsGuessedByPlayer());
         } else {
           System.out.println("Letter already played. try again with another one.");
           continue;
         }
 
-        if(playerWon(targetCity, rightWordsGuessedByPlayer)) {
+        if(playerWon(targetCity, player.getRightWordsGuessedByPlayer())) {
           System.out.println("You win!");
           System.out.println("You have guessed " + targetCity + " correctly.");
           break;
         }
       } else {
-        playerGuesses = playerGuesses - 1;
-        wrongWordsGuessedByPlayer.add(userGuess);
-        displayGuessesPosition(targetCity, rightWordsGuessedByPlayer);
+        player.decreasePlayerGuesses();
+        player.addToPlayerWrongGuesses(userGuess);
+        displayGuessesPosition(targetCity, player.getRightWordsGuessedByPlayer());
       }
-      System.out.println("You have guessed " + "(" + (MAXIMUM_GUESSES_AVAILABLE - playerGuesses)
-          + ")" + " wrong letters: " + wrongWordsGuessedByPlayer);
+      System.out.println("You have guessed " + "(" +
+          (MAXIMUM_GUESSES_AVAILABLE - player.getAvailablePlayerGuesses())
+          + ")" + " wrong letters: " + player.getWrongWordsGuessedByPlayer());
     }
   }
 
@@ -142,18 +138,6 @@ public class Main {
       }
     }
     return countOfCorrectLetter == countByWord.size();
-  }
-
-  private static int countCharacterInArray(char targetCharacter, ArrayList<Character> userGuesses) {
-    int characterQuantity = 0;
-
-    for (char character : userGuesses) {
-      if (Character.toLowerCase(character) == Character.toLowerCase(targetCharacter) ||
-          Character.toUpperCase(character) == Character.toUpperCase(targetCharacter)) {
-        characterQuantity += 1;
-      }
-    }
-    return characterQuantity;
   }
 
 }
