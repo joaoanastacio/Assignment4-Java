@@ -30,7 +30,6 @@ public class Main {
     int targetLineInFile = (int) (Math.random() * baseSearchRange) + INITIAL_LINE_IN_FILE;
 
     String targetCity = getCityAtLineInFile(targetLineInFile, baseFile);
-    System.out.println("Target City: " + targetCity); // TODO: remove comment
     displayIntroduction(targetCity);
     int playerGuesses = MAXIMUM_GUESSES_AVAILABLE;
     ArrayList<Character> wrongWordsGuessedByPlayer = new ArrayList<>();
